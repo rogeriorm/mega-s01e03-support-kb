@@ -18,7 +18,9 @@ signature: v1.eyJzdWIiOiIyODgiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdC
 problems with three different fixes. Each one now has its own ticket.
 
 <Callout kind="warn">
-The fix queued for #4471 covers only the shared parser. The other two problems stay open after it ships.
+Engineering closed #4471 on 5 October: the parser is fixed (`fix(dates): parse dd/mm for eu locales`)
+and the hint won't be fixed, because the booking-v3 form is retired. Neither change explains a
+one-day move, so that ticket stays open.
 </Callout>
 
 ## The problems
@@ -29,13 +31,13 @@ The fix queued for #4471 covers only the shared parser. The other two problems s
 
 Every tenant on file writes the day first. The shared parser reads month first, so day and month
 swap: a booking for 7 April goes out for 4 July. This covers reports from the app, from email, and
-from tenants on `booking-v2`, whose form hint is `DD/MM/YYYY`.
+from tenants on `booking-v2`, whose form hint is `DD/MM/YYYY`. Fixed by `fix(dates): parse dd/mm for eu locales`.
 
 ### `hint`: booking-v3 prints the wrong hint under its date field
 
 `booking-v3` prints `MM/DD/YYYY` under its date field and reads what people type the tenant's
 way, day first. People who follow the hint get their dates swapped. Fixing the parser does not fix
-this: the form has to print the hint its tenant reads.
+this. Won't fix: the booking-v3 form is retired.
 
 ### `one-day-move`: dates move by one day, not by a swap
 
@@ -43,8 +45,8 @@ These reports describe a date one day off: an invite on Tuesday 12 May with the 
 Monday 11 May, the same meeting on Tuesday in Lisbon and Monday in Toronto, June bookings one day
 off, an invite that arrived before its booking. No day and month swap explains them. A time zone
 or day-boundary fault is the likely cause; the export has no event times to prove it. The desk
-already listed these reports in `desk-notes.json`; `causes.ts` still files them under
-`parser` by tenant.
+already listed these reports in `desk-notes.json`; `causes.ts` files them under `parser` by
+tenant, so they count there too. Open: the parser fix does not move a date by a day.
 
 ## How #4471 got here
 
